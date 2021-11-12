@@ -26,6 +26,7 @@ module.exports = {
     'vue/attributes-order': 'error',
     'vue/order-in-components': 'error',
     'vue/html-indent': 'error',
+    'vue/valid-v-model': 'off',
     quotes: ['error', 'single']
   },
 
