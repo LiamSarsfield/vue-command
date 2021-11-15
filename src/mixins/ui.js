@@ -15,7 +15,7 @@ export default {
       isInProgress: false
     }
   }),
-
+  emits: ['update:isFullscreen', 'update:isInProgress'],
   watch: {
     isFullscreen () {
       this.setIsFullscreen(this.isFullscreen)

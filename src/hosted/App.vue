@@ -4,14 +4,14 @@
     <p>A fully working, most feature-rich Vue.js terminal emulator.</p>
 
     <vue-command
+      v-model:cursor="cursor"
+      v-model:history="history"
+      v-model:stdin="stdin"
       :autocompletion-resolver="autocompletionResolver"
       :built-in="builtIn"
       :commands="commands"
-      :cursor.sync="cursor"
-      :history.sync="history"
       :help-timeout="1250"
       :prompt="prompt"
-      :stdin.sync="stdin"
       show-help>
     </vue-command>
     <pre>
@@ -29,6 +29,7 @@ import LoadingAnimation from './LoadingAnimation'
 import NanoEditor from './NanoEditor'
 import VueCommand from '../components/VueCommand'
 import { createStdout, createStderr, createDummyStdout } from '../library'
+import { h } from 'vue'
 
 const PROMPT = '~neil@moon:#/'
 
@@ -206,7 +207,7 @@ export default {
         if (this.stdin !== '' && candidates.length > 1) {
           this.history.push({
             // Build table programmatically
-            render: createElement => {
+            render: () => {
               const columns = candidates.length < 5 ? candidates.length : 4
               const rows = candidates.length < 5 ? 1 : Math.ceil(candidates.length / columns)
 
@@ -215,14 +216,16 @@ export default {
               for (let i = 0; i < rows; i++) {
                 const row = []
                 for (let j = 0; j < columns; j++) {
-                  row.push(createElement('td', candidates[index]))
+                  row.push(h('td', null, candidates[index]))
                   index++
                 }
 
-                table.push(createElement('tr', [row]))
+                table.push(h('tr', null, row))
+                console.log(`Final row: ${row}`)
               }
-
-              return createElement('table', { style: { width: '100%' } }, [table])
+              console.log(`Final table: ${table}`)
+              console.log(h('table', { style: { width: '100%' } }, table))
+              return h('table', { style: { width: '100%' } }, table)
             }
           })
         }
@@ -231,7 +234,7 @@ export default {
         if (candidates.length === 1) {
           // Mutating Stdin mutates the cursor, so we've to wait to push it to the end
           const unwatch = this.$watch(() => this.cursor, () => {
-            this.cursor = cursor + (candidates[0].length - autocompleteableStdin.length + 0)
+            this.cursor = cursor + (candidates[0].length - autocompleteableStdin.length)
 
             unwatch()
           })
@@ -286,7 +289,7 @@ export default {
         if (autocompleteableStdin === '--' || candidates.length > 1) {
           this.history.push({
             // Build table programmatically
-            render: createElement => {
+            render: () => {
               const columns = candidates.length < 5 ? candidates.length : 4
               const rows = candidates.length < 5 ? 1 : Math.ceil(candidates.length / columns)
 
@@ -295,14 +298,16 @@ export default {
               for (let i = 0; i < rows; i++) {
                 const row = []
                 for (let j = 0; j < columns; j++) {
-                  row.push(createElement('td', `--${candidates[index]}`))
+                  row.push(h('td', null, `--${candidates[index]}`))
                   index++
                 }
 
-                table.push(createElement('tr', [row]))
+                table.push(h('tr', null, row))
+                console.log(`Final row: ${row}`)
               }
-
-              return createElement('table', { style: { width: '100%' } }, [table])
+              console.log(`Final table: ${table}`)
+              console.log(h('table', { style: { width: '100%' } }, table))
+              return h('table', { style: { width: '100%' } }, table)
             }
           })
         }
@@ -341,7 +346,7 @@ export default {
         if (autocompleteableStdin === '-' || candidates.length > 1) {
           this.history.push({
             // Build table programmatically
-            render: createElement => {
+            render: () => {
               const columns = candidates.length < 5 ? candidates.length : 4
               const rows = candidates.length < 5 ? 1 : Math.ceil(candidates.length / columns)
 
@@ -350,14 +355,17 @@ export default {
               for (let i = 0; i < rows; i++) {
                 const row = []
                 for (let j = 0; j < columns; j++) {
-                  row.push(createElement('td', `-${candidates[index]}`))
+                  row.push(h('td', `-${candidates[index]}`))
                   index++
                 }
 
-                table.push(createElement('tr', [row]))
+                table.push(h('tr', [row]))
+                console.log(`Final row: ${row}`)
               }
+              console.log(`Final table: ${table}`)
+              console.log(h('table', [table]))
 
-              return createElement('table', { style: { width: '100%' } }, [table])
+              return h('table', [table])
             }
           })
         }

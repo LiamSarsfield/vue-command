@@ -26,6 +26,10 @@ export default {
   inject: ['setStdin'],
 
   props: {
+    bus: {
+      required: true,
+      type: Object
+    },
     executed: {
       required: true,
       type: Set
@@ -43,6 +47,7 @@ export default {
       type: String
     }
   },
+  emits: ['update:isSearch'],
 
   data: () => ({
     // Suggested command

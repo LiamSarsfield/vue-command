@@ -17,13 +17,15 @@ export default {
   }),
 
   watch: {
-    history () {
-      // Creates a new copy to prevent mutation
-      this.setHistory([...this.history])
+    history: {
+      handler () {
+        // Creates a new copy to prevent mutation
+        this.setHistory([...this.history])
+      },
+      deep: true
     },
-
     'local.pointer' () {
-      this.$emit('update:pointer', this.local.pointer)
+      this.bus.emit('update:pointer', this.local.pointer)
     },
 
     pointer () {

@@ -21,8 +21,9 @@
       <search
         v-if="isSearch"
         ref="search"
+        v-model:is-search="isSearch"
+        :bus="this.bus"
         :executed="local.executed"
-        :is-search.sync="isSearch"
         :stdin="stdin"
         @click="focus"
         @handle="handle"/>
@@ -49,8 +50,9 @@
 
           <stdin
             v-show="(index === 0 && !local.isFullscreen) || !(index === local.history.length - 1 && local.isInProgress) && !local.isFullscreen"
-            ref="stdin"
-            :bus="bus"
+            :ref="'stdin'+index"
+            v-model:stdin="local.stdin"
+            :bus="this.bus"
             :cursor="local.cursor"
             :hide-prompt="hidePrompt"
             :is-fullscreen="local.isFullscreen"
@@ -60,7 +62,6 @@
             :help-text="helpText"
             :help-timeout="helpTimeout"
             :show-help="showHelp"
-            :stdin.sync="local.stdin"
             :uid="_uid"
             @handle="handle">
             <template #prompt>
@@ -74,7 +75,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 
 import Search from './Search'
 import Stdin from './Stdin'
@@ -84,12 +84,11 @@ import HandleMixin from '../mixins/handle'
 import HistoryMixin from '../mixins/history'
 import SearchMixin from '../mixins/search'
 import UIMixin from '../mixins/ui'
-import { EVENT_LISTENERS } from './../library'
-
-// Event bus for communication
-const EventBus = new Vue()
+import { createDummyStdout, EVENT_LISTENERS } from './../library'
+import mitt from 'mitt'
 
 export default {
+  emits: ['update:cursor', 'update:history', 'update:stdin', 'execute', 'executed'],
   components: { Search, Stdin, Stdout },
 
   mixins: [AutocompleteMixin, HandleMixin, HistoryMixin, SearchMixin, UIMixin],
@@ -233,7 +232,7 @@ export default {
 
   data: () => ({
     // Bus for communication
-    bus: EventBus,
+    bus: mitt(),
 
     // A local copy to allow the absence of properties
     local: {
@@ -244,7 +243,7 @@ export default {
     // Detect scroll and resize events
     scroll: {
       eventListener: undefined,
-      // Determinates if scolled to bottom
+      // Determine if scrolled to bottom
       isBottom: true,
       resizeObserver: undefined
     }
@@ -257,7 +256,7 @@ export default {
 
     'local.stdin' () {
       // Emit the current Stdin as an event
-      this.$emit('input', this.local.stdin)
+      this.bus.emit('input', this.local.stdin)
 
       // Update given property
       this.$emit('update:stdin', this.local.stdin)
@@ -323,11 +322,7 @@ export default {
     // If there is no entry push dummy Stdout to show Stdin
     if (history.length === 0) {
       // Push dummy Stdout without termination
-      history.push({
-        name: 'VueCommandDummyStdout',
-        render: createElement => createElement('span', {}, '')
-      })
-
+      history.push(createDummyStdout())
       // Update the history property
       this.$emit('update:history', [...history])
     }
@@ -337,7 +332,7 @@ export default {
 
   methods: {
     emitInput (input) {
-      this.$emit('input', input)
+      this.bus.emit('input', input)
     },
 
     emitExecute () {
@@ -361,7 +356,7 @@ export default {
       }
 
       // Latest Stdin is latest history entry
-      const stdin = this.$refs.stdin[this.local.history.length - 1]
+      const stdin = this.$refs[`stdin${this.local.history.length - 1}`]
       // Call component method
       stdin.focus()
     },

@@ -1,4 +1,6 @@
 // @vue/component
+import { nextTick } from 'vue'
+
 export default {
   data: () => ({
     isSearch: false
@@ -7,11 +9,9 @@ export default {
   watch: {
     async isSearch () {
       if (!this.isSearch) {
-        await this.$nextTick()
-
-        const stdins = this.$refs.stdin
+        await nextTick()
         // Latest Stdin is latest history entry
-        const stdin = stdins[this.local.history.length - 1]
+        const stdin = this.$refs[`stdin${this.local.history.length - 1}`]
 
         // Call component method
         stdin.focus()

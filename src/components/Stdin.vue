@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { nextTick } from 'vue'
+
 export default {
   inject: ['setCursor', 'setStdin'],
 
@@ -97,6 +99,7 @@ export default {
       type: Number
     }
   },
+  emits: ['update:stdin'],
 
   data: () => ({
     placeholder: '',
@@ -117,7 +120,7 @@ export default {
 
     async isInProgress () {
       if (!this.isInProgress && this.isLast) {
-        await this.$nextTick()
+        await nextTick()
 
         this.scrollIntoView()
         this.focus()
@@ -137,7 +140,7 @@ export default {
         this.local.stdin = this.stdin
       }
 
-      await this.$nextTick()
+      await nextTick()
       // Set current cursor position
       this.setCursor(this.$refs.input.selectionStart)
     },
@@ -183,8 +186,8 @@ export default {
       this.placeholder = placeholder
     },
 
-    setPrompt (promt) {
-      this.local.prompt = promt
+    setPrompt (prompt) {
+      this.local.prompt = prompt
     },
 
     blur () {

@@ -12,6 +12,7 @@ export default {
       cursor: 0
     }
   }),
+  emits: ['update:cursor'],
 
   watch: {
     cursor () {

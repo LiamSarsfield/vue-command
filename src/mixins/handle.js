@@ -52,6 +52,7 @@ export default {
       terminate: this.terminate
     }
   },
+  emits: ['update:executed', 'update:history'],
 
   methods: {
     // Handles the command

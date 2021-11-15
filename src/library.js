@@ -1,5 +1,6 @@
 import VueCommand from './components/VueCommand'
 import { ARROW_UP_KEY, ARROW_DOWN_KEY, R_KEY, TAB_KEY } from '../src/constants/keys'
+import { h, nextTick } from 'vue'
 
 // Returns a Stdout component containing a span element with given inner content
 export const createStdout = (content, isInnerText = false, isEscapeHtml = false, name = 'VueCommandStdout', ...mixins) => ({
@@ -8,21 +9,21 @@ export const createStdout = (content, isInnerText = false, isEscapeHtml = false,
   inject: ['terminate'],
   async mounted () {
     // Wait for user mutations
-    await this.$nextTick()
+    await nextTick()
 
     this.terminate()
   },
 
-  render: createElement => {
+  render: () => {
     if (isEscapeHtml) {
-      return createElement('span', {}, content)
+      return h('span', {}, content)
     }
 
     if (isInnerText) {
-      return createElement('span', { domProps: { innerText: content } })
+      return h('span', { innerText: content })
     }
 
-    return createElement('span', { domProps: { innerHTML: content } })
+    return h('span', { innerHTML: content })
   }
 })
 
@@ -33,17 +34,17 @@ export const createStderr = (content, isEscapeHtml = false, name = 'VueCommandSt
   inject: ['terminate'],
   async mounted () {
     // Wait for user mutations
-    await this.$nextTick()
+    await nextTick()
 
     this.terminate()
   },
 
-  render: createElement => {
+  render: () => {
     if (isEscapeHtml) {
-      return createElement('span', {}, content)
+      return h('span', {}, content)
     }
 
-    return createElement('span', { domProps: { innerHTML: content } })
+    return h('span', { innerHTML: content })
   }
 })
 
@@ -54,12 +55,12 @@ export const createDummyStdout = (name = 'VueCommandDummyStdout', ...mixins) => 
   inject: ['terminate'],
   async mounted () {
     // Wait for user mutations
-    await this.$nextTick()
+    await nextTick()
 
     this.terminate()
   },
 
-  render: createElement => createElement('span', {}, '')
+  render: () => h('span', {}, '')
 })
 
 // Default event listeners to opt-in
