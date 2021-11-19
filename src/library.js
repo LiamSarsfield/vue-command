@@ -28,7 +28,7 @@ export const createStdout = (content, isInnerText = false, isEscapeHtml = false,
 })
 
 // Returns a Stderr component containing a span element with given inner content
-export const createStderr = (content, isEscapeHtml = false, name = 'VueCommandStderr', ...mixins) => ({
+export const createStderr = (content, isInnerText = false, isEscapeHtml = false, name = 'VueCommandStderr', ...mixins) => ({
   name,
   mixins,
   inject: ['terminate'],
@@ -42,6 +42,10 @@ export const createStderr = (content, isEscapeHtml = false, name = 'VueCommandSt
   render: () => {
     if (isEscapeHtml) {
       return h('span', {}, content)
+    }
+
+    if (isInnerText) {
+      return h('span', { innerText: content })
     }
 
     return h('span', { innerHTML: content })

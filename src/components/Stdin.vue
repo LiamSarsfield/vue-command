@@ -150,6 +150,11 @@ export default {
       this.$emit('update:stdin', this.local.stdin)
       // Set current cursor position
       this.setCursor(this.$refs.input.selectionStart)
+    },
+    helpText () {
+      if (this.isLast && this.showHelp) {
+        this.setPlaceholder(this.helpText)
+      }
     }
   },
 

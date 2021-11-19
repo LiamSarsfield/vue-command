@@ -88,7 +88,7 @@ import { createDummyStdout, EVENT_LISTENERS } from './../library'
 import mitt from 'mitt'
 
 export default {
-  emits: ['update:cursor', 'update:history', 'update:stdin', 'execute', 'executed'],
+  emits: ['update:cursor', 'update:history', 'update:stdin', 'execute', 'executed', 'input'],
   components: { Search, Stdin, Stdout },
 
   mixins: [AutocompleteMixin, HandleMixin, HistoryMixin, SearchMixin, UIMixin],
@@ -256,7 +256,7 @@ export default {
 
     'local.stdin' () {
       // Emit the current Stdin as an event
-      this.bus.emit('input', this.local.stdin)
+      this.$emit('input', this.local.stdin)
 
       // Update given property
       this.$emit('update:stdin', this.local.stdin)
@@ -332,7 +332,7 @@ export default {
 
   methods: {
     emitInput (input) {
-      this.bus.emit('input', input)
+      this.$emit('input', input)
     },
 
     emitExecute () {
