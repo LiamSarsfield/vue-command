@@ -36,7 +36,7 @@ export default {
   methods: {
     increaseHistory () {
       // Check if pointer is mutable
-      if (this.local.pointer < (this.local.executed.size - 1)) {
+      if (this.local.executed !== undefined && this.local.pointer < (this.local.executed.size - 1)) {
         this.local.pointer++
 
         // Set new pointed Stdin
