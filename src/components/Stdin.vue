@@ -92,14 +92,9 @@ export default {
       default: '',
       required: true,
       type: String
-    },
-
-    uid: {
-      required: true,
-      type: Number
     }
   },
-  emits: ['update:stdin'],
+  emits: ['update:stdin', 'handle'],
 
   data: () => ({
     placeholder: '',
@@ -145,9 +140,11 @@ export default {
       this.setCursor(this.$refs.input.selectionStart)
     },
 
-    'local.stdin' () {
+    async 'local.stdin' () {
       // Set current Stdin
       this.$emit('update:stdin', this.local.stdin)
+
+      await nextTick()
       // Set current cursor position
       this.setCursor(this.$refs.input.selectionStart)
     },

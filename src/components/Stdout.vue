@@ -1,16 +1,12 @@
 <template>
-  <component :is="component" />
+  <div>
+    <slot/>
+  </div>
 </template>
 
 <script>
-export default {
-  props: {
-    component: {
-      required: true,
-      type: Object
-    }
-  }
-}
+
+export default {}
 </script>
 
 <style lang="scss">

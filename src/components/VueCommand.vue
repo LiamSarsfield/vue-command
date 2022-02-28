@@ -45,8 +45,9 @@
           :class="{ 'term-hist-fullscreen' : (local.isFullscreen && index === local.history.length - 1) }">
           <stdout
             v-show="(!local.isFullscreen || index === local.history.length - 1)"
-            :component="stdout"
-            class="term-stdout"/>
+            class="term-stdout">
+            <component :is="stdout"/>
+          </stdout>
 
           <stdin
             v-show="(index === 0 && !local.isFullscreen) || !(index === local.history.length - 1 && local.isInProgress) && !local.isFullscreen"
@@ -62,7 +63,6 @@
             :help-text="helpText"
             :help-timeout="helpTimeout"
             :show-help="showHelp"
-            :uid="_uid"
             @handle="handle">
             <template #prompt>
               <slot name="prompt" />
@@ -294,26 +294,10 @@ export default {
   },
 
   created () {
-    // Observe "executed" changes since Vue.js can't watch a "Set". See: https://github.com/ndabAP/vue-command/issues/151
-    this.executed.add = function (...x) {
-      this.local.executed.add(...x)
-
-      Object.getPrototypeOf(this).add.call(this, ...x)
-    }
-    this.executed.clear = function () {
-      this.local.executed.clear()
-
-      Object.getPrototypeOf(this).add.call(this)
-    }
-    this.executed.delete = function (...x) {
-      this.local.executed.delete(...x)
-
-      Object.getPrototypeOf(this).delete.call(this, ...x)
-    }
-
     // Apply user given properties
     this.setCursor(this.cursor)
     this.setPointer(this.pointer)
+    this.setExecuted(this.executed)
     this.setStdin(this.stdin)
     this.setIsInProgress(this.isInProgress)
     this.setIsFullscreen(this.isFullscreen)

@@ -29,7 +29,7 @@ import LoadingAnimation from './LoadingAnimation'
 import NanoEditor from './NanoEditor'
 import VueCommand from '../components/VueCommand'
 import { createStdout, createStderr, createDummyStdout } from '../library'
-import { h } from 'vue'
+import { h, markRaw } from 'vue'
 
 const PROMPT = '~neil@moon:#/'
 
@@ -205,7 +205,7 @@ export default {
 
         // Autocompletion resolved into multiple results
         if (this.stdin !== '' && candidates.length > 1) {
-          this.history.push({
+          this.history.push(markRaw({
             // Build table programmatically
             render: () => {
               const columns = candidates.length < 5 ? candidates.length : 4
@@ -227,7 +227,7 @@ export default {
               console.log(h('table', { style: { width: '100%' } }, table))
               return h('table', { style: { width: '100%' } }, table)
             }
-          })
+          }))
         }
 
         // Autocompletion resolved into one result
@@ -287,7 +287,7 @@ export default {
 
         // Autocompletion resolved into multiple result
         if (autocompleteableStdin === '--' || candidates.length > 1) {
-          this.history.push({
+          this.history.push(markRaw({
             // Build table programmatically
             render: () => {
               const columns = candidates.length < 5 ? candidates.length : 4
@@ -309,7 +309,7 @@ export default {
               console.log(h('table', { style: { width: '100%' } }, table))
               return h('table', { style: { width: '100%' } }, table)
             }
-          })
+          }))
         }
 
         return

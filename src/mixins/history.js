@@ -1,4 +1,6 @@
 // @vue/component
+import { markRaw } from 'vue'
+
 export default {
   provide () {
     return {
@@ -59,7 +61,7 @@ export default {
     },
 
     setHistory (history) {
-      this.local.history = history
+      this.local.history = history.map(historyItem => markRaw(historyItem))
     },
 
     setPointer (pointer) {
